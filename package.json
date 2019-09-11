@@ -1,0 +1,22 @@
+{
+  "name": "markdown-generator",
+  "version": "1.0.0",
+  "description": "NodeJS script that generate markdown file for mysql schema",
+  "main": "index.js",
+  "dependencies": {
+    "mysql": "^2.17.1"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arifjaunpur/markdown-generator.git"
+  },
+  "author": "Arif Khan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arifjaunpur/markdown-generator/issues"
+  },
+  "homepage": "https://github.com/arifjaunpur/markdown-generator#readme"
+}
