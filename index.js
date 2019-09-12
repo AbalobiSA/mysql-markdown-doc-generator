@@ -21,7 +21,9 @@ const pool = mysql.createPool(dbOptions);
 (async () => {
 	console.info('Fetching tables details ...');
 	let results = await query('SHOW TABLES');
-	const tableList = results.map( obj => obj[`Tables_in_${dbOptions.database}`]).sort();
+	const tableList = results.map( obj => obj[`Tables_in_${dbOptions.database}`]).sort(function (a, b) {
+		return a.toLowerCase().localeCompare(b.toLowerCase());
+	}); 
 	console.info(`total ${tableList.length} table found in ${dbOptions.database}`);
 	//console.log('\n------------------------------Tables------------------------------------------------');
 	//console.log(tableList.join(', '), '\n');
@@ -78,6 +80,7 @@ function initDefaultValues() {
 	if(process.env['FILE_NAME'] === undefined) {
 		process.env['FILE_NAME'] = `${process.env['DB_USER']}.md`;
 	}
+	console.log(process.env['DB_HOST'] + process.env['DB_PORT'] +process.env['DB_DATABASE'] + process.env['DB_USER'] + process.env['FILE_PATH'] + process.env['FILE_NAME']);
 }
 
 function getDatabaseConnectionDetails() {
@@ -96,7 +99,11 @@ function query(sql){
 		pool.getConnection(function(err, connection) {
 			connection.query(sql, function (error, results) {
 				connection.release();
-				if (error) return reject(error);
+				//if (error) return reject(error);
+				if (error) {
+					console.error('An error occurred while executing the query')
+					throw error
+				}
 				return resolve(results);
 			});
 		});
@@ -131,6 +138,7 @@ function getTableFormatter(tableObj) {
 		tableObj[tableName].columns.forEach( columnObj => {
 			tableContents += `| ${columnObj.COLUMN_NAME} | ${columnObj.COLUMN_TYPE} | ${columnObj.COLUMN_DEFAULT} | ${columnObj.COLUMN_COMMENT} |\n`
 		} )
+		tableContents += '\n[^Back to top^](#contents)'
 		tableContents += '\n\n\n';
 	}
 	return tableContents;
